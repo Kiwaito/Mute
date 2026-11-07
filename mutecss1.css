@@ -830,6 +830,65 @@ span.new-message::before,span.new-message::after{content:none!important;display:
   --truesight-important-color:var(--l1);
 }
 
+:root{
+  --truesight:var(--g1);
+  --truesight-w:220px;
+  --truesight-padding:10px 14px;
+  --truesight-border:1px solid var(--espi);
+  --truesight-radius:12px;
+  --truesight-font:300 normal 12px var(--pop), 'Arial', sans-serif;
+  --truesight-color:var(--l3);
+  --truesight-head-font:600 italic 18px 'Playfair Display', 'Georgia', serif;
+  --truesight-head-color:var(--espi);
+  --truesight-normal-color:var(--l3);
+  --truesight-normal-font:300 normal 12px var(--pop), 'Arial', sans-serif;
+}
+
+/* ---------- caja ---------- */
+#truesight{
+  --ts-ac:var(--espi);                 /* color de borde y flechita */
+  box-shadow:0 8px 24px rgba(0,0,0,.6);
+  text-align:center;
+  line-height:1.45;
+}
+#truesight[style*="--group:"]:not(.important){--ts-ac:var(--group)}
+#truesight:not(.important){border-color:var(--ts-ac)}
+
+/* ---------- título: centrado con línea debajo ---------- */
+#truesight .ts-head{
+  margin:0;
+  padding:0 0 6px;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+  line-height:1.2;
+}
+
+/* ---------- descripción: centrada ---------- */
+#truesight .ts-text{
+  padding-top:6px;
+  text-align:center;
+  text-align-last:center;
+  line-height:1.45;
+}
+/* si no hay título, sin el hueco de arriba */
+#truesight .ts-text:first-child{padding-top:0}
+
+/* ---------- flechita (apunta hacia abajo) ---------- */
+#truesight::after{
+  content:"";
+  position:absolute;
+  top:100%;left:50%;
+  width:10px;height:10px;
+  background:var(--truesight);
+  border-right:1px solid var(--ts-ac);
+  border-bottom:1px solid var(--ts-ac);
+  transform:translate(-50%,-5px) rotate(45deg);
+}
+#truesight.important::after{
+  background:var(--truesight-important);
+  border-color:rgba(255,255,255,.1);
+}
+
 
 /* BASE ****************************************************************************************************/
 #main-content>div[style="overflow:visible"] { display:none!important;}
