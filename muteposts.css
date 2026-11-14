@@ -1,0 +1,997 @@
+/* =====================================================
+   POST
+   ===================================================== */
+.post {
+	background: linear-gradient(180deg, var(--g3) 78%, color-mix(in srgb, var(--pc) 38%, var(--g3)) 100%);
+	border: 1px solid var(--border);
+	border-radius: 28px;
+	overflow: hidden;   /* fallback */
+	overflow: clip;     /* permite el sticky y mantiene el border-radius */
+	margin-top: 15px;
+}
+
+/* =====================================================
+   PARTE ALTA: 2 COLUMNAS
+   ===================================================== */
+.cajcont {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	position: relative;
+}
+
+/* ----- Columna izquierda ----- */
+.colizq {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.primera {
+	width: 100%;
+	position: relative;
+}
+
+.portada {
+	height: 300px;
+	overflow: hidden;
+	position: relative;
+	border-bottom: 1px solid var(--pj, var(--pc2));
+}
+
+.portada .Dato,
+.portada .conts { height: 100%; }
+
+.portada img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.Dato.portada::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 1;
+	background: linear-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, .2)),linear-gradient(180deg,rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, .9) 20%,rgba(0, 0, 0, .65) 40%,rgba(10, 10, 10, .35) 60%,rgba(20, 20, 20, .12) 80%,rgba(20, 20, 20, 0) 100%);
+}
+
+.elicono {
+	width: 150px;
+	height: 150px;
+	border-radius: 100%;
+	border: 3px solid var(--g3);
+	outline: 1px solid var(--pj, var(--pc2));
+	overflow: hidden;
+	position: absolute;
+	left: 40px;
+	top: 220px;
+	z-index: 2;
+}
+
+.elicono .Dato,
+.elicono .conts { height: 100%; }
+
+.elicono img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Los campos movidos por el JS no necesitan su etiqueta */
+.portada .label,
+.elicono .label,
+.inventario .label,
+.par .label { display: none; }
+
+.fiu {
+	box-sizing: border-box;
+	padding: 15px 20px 25px 240px;
+	border-bottom: 1px solid var(--border);
+	font-family: var(--pop);
+	color: var(--l2);
+	font-size: 12px;
+}
+
+.phname a strong {
+	font-family: 'Playfair Display', serif;
+	font-size: 40px;
+	font-weight: normal;
+	color: var(--l1);
+}
+
+.estatema {
+	text-transform: lowercase;
+	margin-top: -5px;
+}
+
+.cajcont .postbody {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 20px;
+	flex: 1;
+	font-family: var(--pop);
+	color: var(--l3);background: var(--g3);
+}
+
+/* ----- Columna derecha ----- */
+.isi {
+	flex: 0 0 333px;
+	width: 333px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(180deg, var(--g1) 20%, color-mix(in srgb, var(--pj) 50%, transparent) 100%);
+}
+
+.perfilymenu {
+	flex: 1;
+	display: block;
+}
+
+.deslizar {
+	position: sticky;
+	top: 75px;
+	max-height: calc(100vh - 30px);
+	overflow-y: auto;
+	scrollbar-width: none;
+}
+
+.deslizar::-webkit-scrollbar { display: none; }
+
+.postprofile { padding: 9px; }
+
+#nombrecontenedor { position: relative; }
+
+/* La imagen manda el tamaño: 7:11 (350x550). El inline style del foro se anula. */
+.ppavatar img {
+	display: block;
+	width: 100% !important;
+	max-width: none !important;
+	max-height: none !important;
+	height: auto;
+	aspect-ratio: 7 / 11;
+	object-fit: cover;
+	border-radius: 22px;
+}
+
+/* ----- Tarjeta de datos: aparece al pasar el cursor por la imagen ----- */
+#Contenido {
+	position: absolute;
+	inset: 20px;
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-content: start;
+	column-gap: 16px;
+	padding: 18px 20px;
+	overflow: auto;
+	scrollbar-width: none;
+	font-family: var(--pop), sans-serif;
+	color: var(--l1);
+	background: linear-gradient(180deg, color-mix(in srgb, var(--pj) 20%, transparent) 0%, rgba(15, 15, 15, .92) 60%);
+	border: 1px solid var(--pj);
+	border-radius: 22px;
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(8px);
+	transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
+}
+
+#Contenido::-webkit-scrollbar { display: none; }
+
+.postprofile:hover #Contenido,
+.postprofile:focus-within #Contenido {
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+	transition-delay: 0s;
+}
+
+/* Orden y columnas (el HTML trae rango y ocupación primero) */
+#Contenido > * { grid-column: 1 / -1; order: 3; }
+#Contenido > .Dato.apodo { order: 1; }
+#Contenido > .laocupacion { order: 2; }
+#Contenido > .rango { order: 4; }
+#Contenido > .Dato.wones,
+#Contenido > .Dato.mensajes { grid-column: auto; order: 5; }
+#Contenido > .Dato.triggers { order: 6; }
+
+.rango:empty,
+.laocupacion:empty { display: none; }
+
+/* Fila: valor arriba, etiqueta pequeña debajo */
+#Contenido .Dato {
+	display: flex;
+	flex-direction: column-reverse;
+	gap: 2px;
+	margin: 0;
+	padding: 10px 4px 9px;
+	border-bottom: 1px solid color-mix(in srgb, var(--pj) 50%, transparent);
+}
+
+#Contenido .Dato .conts {
+	font-size: 14px;
+	line-height: 1.3;
+	color: var(--l1);
+}
+
+/* La etiqueta trae " : " y un color inline: se ocultan los dos puntos y se fuerza el color */
+#Contenido .Dato .label,
+#Contenido .Dato .label .label {
+	font-size: 0;
+	line-height: 0;
+}
+
+#Contenido .Dato .label .label > span {
+	font-size: 13px;
+	line-height: 0.6;
+	color: var(--l3) !important;
+}
+
+/* Apodo = título */
+#Contenido .Dato.apodo { padding: 0; border: 0; }
+#Contenido .Dato.apodo .label { display: none; }
+#Contenido .Dato.apodo .conts {
+	font-family: 'Playfair Display', serif;
+	font-size: 30px;
+	font-weight: 400;
+	line-height: 1.1;
+}
+
+/* Ocupación = subtítulo */
+.laocupacion .Dato { padding: 0 0 6px; border: 0; }
+.laocupacion .label { display: none; }
+.laocupacion .conts { font-size: 14px; color: var(--pj); }
+
+/* Triggers = etiquetas */
+#Contenido .Dato.triggers { padding: 14px 0 0; border: 0; }
+#Contenido .Dato.triggers .label { display: none; }
+#Contenido .Dato.triggers .conts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+}
+.laocupacion {
+	margin-bottom: 10px;
+}
+#Contenido .Dato.triggers strong {
+	display: inline-flex;
+	gap: 0px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--l1);
+	background: color-mix(in srgb, var(--pj) 25%, transparent);
+	border: 1px solid color-mix(in srgb, var(--pj) 55%, transparent);
+	border-radius: 99px;
+}
+
+#Contenido .Dato.triggers strong::before { content: "#"; color: var(--pj); }
+
+/* Pantallas sin hover (móvil/tablet): la tarjeta se queda visible debajo de la imagen */
+@media (hover: none) {
+	#Contenido {
+		position: static;
+		margin-top: 10px;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+	}
+}
+
+/* =====================================================
+   PARTE BAJA
+   ===================================================== */
+.partebajis {
+	width: 100%;
+	box-sizing: border-box;background: var(--g1);
+}
+
+.tresmas {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1.1fr;
+	border-top: 1px solid var(--border);
+}
+
+.tresmas > div {
+	min-width: 0;
+	box-sizing: border-box;
+	padding: 24px 30px 28px;
+}
+
+.tresmas > div + div { border-left: 1px solid var(--border); }
+
+.tresmas h4 {
+	margin: 0 0 18px;
+	font-family: 'Playfair Display', serif;
+	font-style: italic;
+	font-weight: 400;
+	font-size: 24px;
+	line-height: 1.1;
+	color: var(--l1);
+}
+
+/* ----- Inventario ----- */
+.inventario {
+	position: relative;
+	width: 335px;
+	height: 165px;
+}
+
+.inventario .Dato {
+	display: block;
+	position: absolute;
+	inset: 0;
+	padding: 0;
+}
+
+.inventario .conts {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	gap: 10px;
+	height: 165px;
+	overflow: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	box-sizing: border-box;
+	padding: 6px;
+}
+
+.inventario .conts::-webkit-scrollbar { display: none; }
+.inventario .conts br { display: none; }
+
+.inventario .conts img {
+	box-sizing: border-box;
+	flex: none;
+	width: 70px;
+	height: 70px;
+	padding: 8px;
+	object-fit: contain;
+	background: var(--g3);
+	border: 1px solid var(--border);
+	border-radius: 15px;
+	cursor: pointer;
+	transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.inventario .conts img:hover {
+	transform: translateY(-3px);
+	border-color: var(--pj);
+	box-shadow: 0 2px 10px color-mix(in srgb, var(--pj) 38%), 0 0 0 1px var(--pj);
+}
+
+/* ----- Medallero ----- */
+.pruebameda dd, .pruebameda dd.dd_award, .pruebameda dd.dd_award.right {
+	position: static;
+	width: 330px;
+	height: 170px;
+	margin: 0;
+	scroll-snap-type: none;
+	scroll-behavior: auto;scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pruebameda dd.dd_award {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.award {
+	position: relative;
+	flex: none;
+	box-sizing: border-box;
+	width: 70px;
+	height: 70px;
+	margin: 0;
+	padding: 8px;
+	background-color: var(--g3);
+	background-image: var(--award-image);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	background-origin: content-box;
+	border: 1px solid var(--border);
+	border-radius: 15px;
+	cursor: pointer;
+	transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+  
+.pruebameda {
+	height: 150px;
+	margin-top: 19px;
+}
+
+.award:hover {
+	z-index: 5;
+	transform: translateY(-3px);
+	border-color: var(--pj);
+	box-shadow: 0 2px 10px color-mix(in srgb, var(--pj) 38%), 0 0 0 1px var(--pj);
+}
+
+/* El tooltip real es el que va DENTRO de .award.
+   Cualquier otro .award_tooltiptext (hermano, clon del foro...) se oculta: eso era el "doble". */
+.award_tooltiptext:not(.award *) { display: none !important; }
+
+.award_tooltiptext {
+	position: absolute;
+	bottom: calc(100% + 14px);
+	left: 50%;
+	z-index: 30;
+	box-sizing: border-box;
+	width: max-content;
+	min-width: 150px;
+	max-width: 210px;
+	margin: 0;
+	padding: 12px 16px 13px;
+	background: var(--g2);
+	border: 1px solid var(--pj);
+	border-radius: 15px;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, .55);
+	color: var(--l3);
+	font-family: var(--pop), sans-serif;
+	font-size: 12.5px;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: center;
+	text-shadow: none;
+	white-space: normal;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translate(-50%, 6px);
+	transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+
+.award:hover .award_tooltiptext {
+	opacity: 1;
+	visibility: visible;
+	transform: translate(-50%, 0);
+	transition-delay: 0s;
+}
+
+.award_tooltiptext::before { content: none; }
+
+.award_tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	width: 10px;
+	height: 10px;
+	margin-top: -6px;
+	background: var(--g2);
+	border: 0;
+	border-right: 1px solid var(--pj);
+	border-bottom: 1px solid var(--pj);
+	transform: translateX(-50%) rotate(45deg);
+}
+
+.award_tooltiptext_title {
+	margin: 0 0 8px;
+	padding: 0 0 8px;
+	background: none;
+	border: 0;
+	border-bottom: 1px solid var(--border);
+	border-radius: 0;
+	font-family: 'Playfair Display', serif;
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-align: center;
+	text-transform: none;
+	color: var(--pj);
+}
+
+/* ----- Pareja ----- */
+.par {
+	display: grid;
+	grid-template-columns: 1fr 135px;
+	grid-template-areas: "nombre foto" "frase foto";
+	grid-template-rows: auto 1fr;
+	column-gap: 18px;
+	align-items: start;
+}
+
+.par .Dato { display: block; padding: 0; }
+
+.nombrepareja { grid-area: nombre; }
+.frasepareja  { grid-area: frase; margin-top: 8px; }
+.imagenpareja { grid-area: foto; }
+
+.nombrepareja .conts {
+	font-family: 'Playfair Display', serif;
+	font-size: 30px;
+	line-height: 1;
+	color: var(--pj);
+	max-width: 220px;
+	text-align: left;
+}
+
+.frasepareja .conts {
+	font-family: var(--pop);
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--l3);
+	overflow: hidden;
+}
+
+.parej {
+	position: relative;
+	max-height: 230px;
+	overflow: hidden;
+	border-left: 0 !important;
+}
+.medallero {
+	border-right: 1px solid var(--border) !important;
+}
+.Dato.imagenpareja {
+	height: 190px;
+	overflow: hidden;
+	box-sizing: border-box;
+	border: 1px solid var(--border);
+	border-radius: 15px;
+	background: var(--g2);
+	right: 15px;
+	position: absolute;
+	width: 150px;
+	top: 40px;
+}
+
+.Dato.imagenpareja img {
+	height: 190px;
+	width: 150px;
+}
+
+.elpostito {
+	box-sizing: border-box;
+	padding: 40px 50px 40px 50px;
+	font-family: "Mona Sans", sans-serif;
+}
+
+.imagenpareja:empty { display: none; }
+
+.fa_like_list {
+	margin: 0;
+	margin-top: 20px;
+}
+
+.imagenpareja img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* ----- Quién ha dado like ----- */
+.quienlike {
+	font-family: var(--pop);
+	font-size: 12px;
+	color: var(--l2);
+}
+
+
+/* ----- Barra de botones ----- */
+.masabaji {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	padding: 12px 18px;
+	border-top: 1px solid var(--border);
+}
+
+.contactoylike,
+.perflink,
+.minimenu,
+.estatemas,
+bipin {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.linkopost { display: flex; }
+
+/* Pastilla común */
+.abajizq a,
+.abajidere a,
+.rep-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 6px 14px;
+	background: var(--g3);
+	border: 1px solid var(--border);
+	border-radius: 99px;
+	font: 12px/1.3 var(--pop), sans-serif;
+	color: var(--l3);
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+	transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.abajizq a:hover,
+.abajidere a:hover,
+.rep-button:hover, .rep-button.fa_liked {
+	border-color: var(--pj);
+	color: var(--l1);
+	background: color-mix(in srgb, var(--pj) 25%, var(--g3));
+}
+
+.abajizq a i,
+.abajidere a i,
+.rep-button i {
+	color: var(--pj);
+	font-size: 12px;
+}
+
+/* Antes de que el JS cambie las imágenes por iconos */
+.abajizq a img,
+.abajidere a img { height: 14px; width: auto; display: block; }
+
+/* =====================================================
+   CABECERA DEL TEMA
+   ===================================================== */
+.navigei p {
+	margin: 0;
+	font-family: var(--pop), sans-serif;
+	font-size: 0;           /* oculta los "::" del HTML */
+	line-height: 1;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+}
+
+.navigei a.nav {
+	font-size: 10.5px;
+	color: var(--pc2);
+	text-decoration: none;
+	transition: color .2s ease;
+}
+
+.navigei a.nav:hover { color: var(--espi); }
+
+/* Solo se ve el nombre; se ocultan el título en negrita y la descripción */
+.navigei a.nav strong,
+.navigei a.nav i { display: none; }
+
+.navigei a.nav + a.nav::before {
+	content: "\2022";
+	margin: 0 9px;
+	font-size: 8px;
+	color: var(--pc);
+}
+
+.tiitumem {
+	position: relative;
+	margin: 2px 0 22px;
+	padding-bottom: 16px;
+	font-family: 'Playfair Display', serif;
+	font-style: italic;
+	font-weight: 400;
+	font-size: 42px;
+	line-height: 1.15;
+	color: var(--l1);
+	border-bottom: 1px solid var(--border);
+}
+
+.tiitumem::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -1px;
+	width: 110px;
+	height: 1px;
+	background: var(--pc);
+}
+
+/* ----- Botones Nuevo tema / Responder ----- */
+.topic-actions .buttons {
+	display: flex; position:relative;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.cosisabajis,
+.nuevote {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.nuevote a {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	box-sizing: border-box;
+	height: 46px;
+	padding: 0 24px;
+	background: var(--g2);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	font: 14px/1 var(--pop), sans-serif;
+	color: var(--l1);
+	text-decoration: none;
+	transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.nuevote a i { font-size: 13px; }
+
+.nuevote a:hover {
+	border-color: var(--pc2);
+	background: color-mix(in srgb, var(--pc) 25%, var(--g2));
+}
+
+.nuevote a.respo {
+	background: var(--pc);
+	border-color: var(--pc2);
+}
+
+.nuevote a.respo:hover {
+	background: color-mix(in srgb, var(--pc2) 55%, var(--pc));
+}
+
+.nuevote a.respo.cerrado {
+	opacity: .6;
+	cursor: not-allowed;
+}
+
+/* ----- Paginación en círculos ----- */
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	margin: 0;
+	font-size: 0;           /* oculta "•" y los &nbsp; */
+}
+
+.pagination > a[href^="javascript"],
+.pagination .page-sep { display: none; }
+
+.pagination > span {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.pagination > span > strong,
+.pagination > span > a {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-width: 34px;
+	height: 34px;
+	padding: 0 8px;
+	background: var(--g3);
+	border: 1px solid var(--border);
+	border-radius: 99px;
+	font: 12px/1 var(--pop), sans-serif;
+	color: var(--l3);
+	text-decoration: none;
+	transition: border-color .2s ease, color .2s ease;
+}
+
+.pagination > span > a:hover {
+	border-color: var(--pc2);
+	color: var(--l1);
+}
+
+.pagination > span > strong {
+	background: var(--pc);
+	border-color: var(--pc2);
+	color: var(--l1);
+}
+
+/* Flechas: se cambia la imagen por un icono */
+.pagination a.pag-img img { display: none; }
+
+.pagination a.pag-img::before {
+	content: "\f285";
+	font-family: "bootstrap-icons";
+	font-size: 12px;
+	line-height: 1;
+}
+
+.pagination a.pag-img:has(img[src*="left"])::before { content: "\f284"; }
+
+/* =====================================================
+   MÓVIL
+   ===================================================== */
+@media (max-width: 900px) {
+	.cajcont { flex-direction: column; }
+	.isi { flex: none; width: 100%; }
+	.deslizar { position: static; max-height: none; }
+	.fiu { padding-left: 210px; }
+	.tresmas { grid-template-columns: 1fr; }
+	.tresmas > div + div { border-left: 0; border-top: 1px solid var(--border); }
+	.par { grid-template-columns: 1fr 110px; }
+	.imagenpareja { height: 140px; }
+}
+
+/* =====================================================
+   CONTENIDO DEL POST (registro de personaje)
+   ===================================================== */
+.registro-grp {
+	--ac: var(--pj, var(--pc2));
+	font-family: var(--pop), sans-serif;
+	color: var(--l3);
+	text-align: left;
+}
+
+.registro-grp * { box-sizing: border-box; }
+
+.rg-nav a {
+	padding: 6px 14px;
+	background: var(--g3);
+	border: 1px solid var(--border);
+	border-radius: 99px;
+	font-size: 12px;
+	line-height: 1.3;
+	cursor: default;
+	transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.rg-nav a.on {
+	color: var(--l1);
+	cursor: pointer;
+}
+
+/* border-color solo acepta un color: sin "1px solid" */
+.rg-nav a.on:hover {
+	border-color: var(--c, var(--ac)) !important;
+	background: color-mix(in srgb, var(--c, var(--ac)) 18%, var(--g3));
+}
+
+/* Enlaces dentro del post */
+.elpostito a,
+.elpostito a:link,
+.elpostito a:visited {
+	color: var(--pj, var(--pc2));
+	text-decoration: none;
+	border: 0;
+	padding-bottom: 2px;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	background-size: 100% 1px;
+	transition: background-size .3s ease, color .2s ease;
+}
+
+.elpostito a:hover {
+	color: var(--l1);
+	background-image: linear-gradient(var(--pj, var(--pc2)), var(--pj, var(--pc2)));
+	background-size: 100% 100%;
+	background-color: transparent;
+}
+
+/* La navegación y el usuario del registro no llevan subrayado animado */
+.elpostito .rg-nav a,
+.elpostito .rg-nav a:link,
+.elpostito .rg-nav a:visited,
+.elpostito .rg-nav a:hover,
+.elpostito .rg-usuario,
+.elpostito .rg-usuario:link,
+.elpostito .rg-usuario:visited,
+.elpostito .rg-usuario:hover {
+	background-image: none !important;
+	background-size: 0 0 !important;
+	text-decoration: none !important;
+}
+
+.elpostito .rg-nav a {
+	padding: 6px 14px !important;
+	border: 1px solid var(--border) !important;
+}
+  
+  .Dato.portada .conts.content {
+	width: 865px;
+	height: 300px;
+}
+  
+  .rep-nb {
+	background: var(--pj);
+	padding: 1px 7px;
+	border-radius: 45%;
+	font-size: 10px;
+}
+
+/* ===== Contenedor con scroll ===== */
+.pruebameda dd.dd_award {
+	box-sizing: border-box;
+	padding: 6px;                 /* aire para que el borde/sombra no se recorten */
+	overflow-x: hidden;
+	overflow-y: auto;
+	align-content: flex-start;
+	scrollbar-width: thin;        /* Firefox */
+	scrollbar-color: var(--pc) transparent;
+}
+ 
+
+ 
+/* ===== Medalla: sin transform =====
+   Un transform en la medalla haría que el tooltip "fixed" se posicione
+   respecto a ella y no respecto a la pantalla. */
+.award {
+	top: 0;
+	transition: top .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+ 
+.award:hover {
+	transform: none;
+	top: -3px;
+	box-shadow: 0 0 0 1px var(--pj), 0 4px 10px rgba(102, 25, 43, .45);
+}
+ 
+/* ===== Tooltip: position fixed (no lo recorta ningún overflow) =====
+   La posición la calcula el JS de abajo con --tx, --ty y --ax. */
+.award_tooltiptext {
+	position: fixed;
+	bottom: auto;
+	left: var(--tx, 0px);
+	top: var(--ty, 0px);
+	transform: translate(-50%, calc(-100% - 8px));
+}
+ 
+.award:hover .award_tooltiptext {
+	transform: translate(-50%, calc(-100% - 14px));
+}
+ 
+/* La flecha sigue a la medalla aunque el tooltip se desplace para no salirse de la pantalla */
+.award_tooltiptext::after { left: calc(50% + var(--ax, 0px)); }
+ 
+/* Si la medalla está arriba del todo, el tooltip sale por debajo */
+.award_tooltiptext.abajo { transform: translate(-50%, 8px); }
+.award:hover .award_tooltiptext.abajo { transform: translate(-50%, 14px); }
+ 
+.award_tooltiptext.abajo::after {
+	top: auto;
+	bottom: 100%;
+	margin-top: 0;
+	margin-bottom: -6px;
+	border: 0;
+	border-left: 1px solid var(--pj);
+	border-top: 1px solid var(--pj);
+}
+.navigei {
+	margin-top: 20px;
+}
+
+.Dato.ocupacion .conts.content {
+	color: var(--l3) !important;
+}
+
+.Dato.ocupacion {
+	border: 0 !important;
+	padding: 0 !important;
+}
+
+#quick_reply {
+	position: relative;
+}
+
+.sceditor-toolbar {
+	position: absolute;
+	width: 100%;
+}
+
+.sceditor-container textarea {
+	padding-top: 60px !important;
+}
